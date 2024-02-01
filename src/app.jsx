@@ -1,6 +1,6 @@
 /* eslint-disable perfectionist/sort-imports */
 import 'src/global.css';
-
+import { ToastContainer } from 'react-toastify';
 import { useScrollToTop } from 'src/hooks/use-scroll-to-top';
 
 import Router from 'src/routes/sections';
@@ -13,6 +13,14 @@ export default function App() {
 
   return (
     <ThemeProvider>
+      <ToastContainer position="top-right"
+        autoClose={5000}
+        hideProgressBar
+        newestOnTop
+        closeOnClick
+        rtl={false}
+        theme='colored'
+      />
       <Router />
     </ThemeProvider>
   );
