@@ -6,7 +6,7 @@ import { useScrollToTop } from 'src/hooks/use-scroll-to-top';
 import Router from 'src/routes/sections';
 import ThemeProvider from 'src/theme';
 
-import { ApolloClient, InMemoryCache, gql } from '@apollo/client';
+import { gql, ApolloClient, InMemoryCache } from '@apollo/client';
 
 // ----------------------------------------------------------------------
 
@@ -14,16 +14,18 @@ export default function App() {
   useScrollToTop();
 
   const client = new ApolloClient({
-    uri: 'http://localhost:4000/',
+    uri: 'http://localhost:4000/graphql',
     cache: new InMemoryCache(),
   });
 
   client
   .query({
     query: gql`
-      query getAllStudents {
-        student {
+      query {
+        getAllStudents {
           name
+          status
+          belt
         }
       }
     `,
