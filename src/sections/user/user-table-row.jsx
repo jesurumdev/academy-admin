@@ -11,6 +11,8 @@ import TableCell from '@mui/material/TableCell';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 
+import { BELTS } from 'src/constants/belts';
+
 import Label from 'src/components/label';
 import Iconify from 'src/components/iconify';
 
@@ -20,7 +22,7 @@ export default function UserTableRow({
   selected,
   name,
   avatarUrl,
-  company,
+  belt,
   role,
   isVerified,
   status,
@@ -35,6 +37,23 @@ export default function UserTableRow({
   const handleCloseMenu = () => {
     setOpen(null);
   };
+
+  const getBeltsColor = (beltColor) => {
+    switch (beltColor) {
+      case BELTS.BLANCO:
+        return '#808080';
+      case BELTS.AZUL:
+        return '#0000ff';
+      case BELTS.MORADO:
+        return '#800080';
+      case BELTS.MARRON:
+        return '#800000';
+        case BELTS.NEGRO:
+          return '#000000';
+      default:
+        return '';
+    }
+  }
 
   return (
     <>
@@ -52,14 +71,21 @@ export default function UserTableRow({
           </Stack>
         </TableCell>
 
-        <TableCell>{company}</TableCell>
+        <TableCell>
+          <Label 
+            style={{ color: `${getBeltsColor(belt)}`, 
+              backgroundColor:  `${getBeltsColor(belt)}80`
+               }}>
+            {belt}
+          </Label>
+        </TableCell>
 
-        <TableCell>{role}</TableCell>
+        {/* <TableCell>{role}</TableCell>
 
-        <TableCell align="center">{isVerified ? 'Yes' : 'No'}</TableCell>
+        <TableCell align="center">{isVerified ? 'Yes' : 'No'}</TableCell> */}
 
         <TableCell>
-          <Label color={(status === 'banned' && 'error') || 'success'}>{status}</Label>
+          <Label color={(status === 'NO ACTIVO' && 'error') || 'success'}>{status}</Label>
         </TableCell>
 
         <TableCell align="right">
@@ -94,11 +120,11 @@ export default function UserTableRow({
 }
 
 UserTableRow.propTypes = {
-  avatarUrl: PropTypes.any,
-  company: PropTypes.any,
+  avatarUrl: PropTypes.string,
+  belt: PropTypes.string,
   handleClick: PropTypes.func,
   isVerified: PropTypes.any,
-  name: PropTypes.any,
+  name: PropTypes.string,
   role: PropTypes.any,
   selected: PropTypes.any,
   status: PropTypes.string,

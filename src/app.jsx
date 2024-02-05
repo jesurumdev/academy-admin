@@ -6,7 +6,7 @@ import { useScrollToTop } from 'src/hooks/use-scroll-to-top';
 import Router from 'src/routes/sections';
 import ThemeProvider from 'src/theme';
 
-import { gql, ApolloClient, InMemoryCache } from '@apollo/client';
+import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client';
 
 // ----------------------------------------------------------------------
 
@@ -18,23 +18,8 @@ export default function App() {
     cache: new InMemoryCache(),
   });
 
-  client
-  .query({
-    query: gql`
-      query {
-        getAllStudents {
-          name
-          status
-          belt
-        }
-      }
-    `,
-  })
-  .then((result) => console.log({result}))
-  .catch((error) => console.log({error}));
-
   return (
-    // <ApolloProvider client={client}>
+    <ApolloProvider client={client}>
       <ThemeProvider>
         <ToastContainer position="top-right"
           autoClose={5000}
@@ -46,6 +31,6 @@ export default function App() {
         />
         <Router />
       </ThemeProvider>
-    // </ApolloProvider>
+    </ApolloProvider>
   );
 }

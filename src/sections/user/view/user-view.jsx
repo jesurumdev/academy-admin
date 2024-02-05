@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
+import { gql, useQuery } from '@apollo/client';
 
 import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
@@ -10,7 +11,7 @@ import Typography from '@mui/material/Typography';
 import TableContainer from '@mui/material/TableContainer';
 import TablePagination from '@mui/material/TablePagination';
 
-import { users } from 'src/_mock/user';
+// import { users } from 'src/_mock/user';
 
 import Iconify from 'src/components/iconify';
 import Scrollbar from 'src/components/scrollbar';
@@ -22,9 +23,36 @@ import TableEmptyRows from '../table-empty-rows';
 import UserTableToolbar from '../user-table-toolbar';
 import { emptyRows, applyFilter, getComparator } from '../utils';
 
+
+
 // ----------------------------------------------------------------------
 
 export default function UserPage() {
+const GET_STUDENTS = gql`
+  query {
+    getAllStudents {
+      id
+      name
+      status
+      belt
+    }
+  }
+`;
+
+const { loading, error, data } = useQuery(GET_STUDENTS);
+
+console.log({ loading, error, data });
+
+const students = useMemo(() => {
+  if (data) {
+    return data.getAllStudents;
+  }
+  return [];
+}, [data]);
+
+console.log({ students })
+
+
   const [page, setPage] = useState(0);
 
   const [order, setOrder] = useState('asc');
@@ -47,7 +75,7 @@ export default function UserPage() {
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelecteds = users.map((n) => n.name);
+      const newSelecteds = students.map((n) => n.name);
       setSelected(newSelecteds);
       return;
     }
@@ -87,7 +115,7 @@ export default function UserPage() {
   };
 
   const dataFiltered = applyFilter({
-    inputData: users,
+    inputData: students,
     comparator: getComparator(order, orderBy),
     filterName,
   });
@@ -97,7 +125,7 @@ export default function UserPage() {
   return (
     <Container>
       <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
-        <Typography variant="h4">Users</Typography>
+        <Typography variant="h4">Estudiantes</Typography>
 
         <Button variant="contained" color="inherit" startIcon={<Iconify icon="eva:plus-fill" />}>
           New User
@@ -117,30 +145,30 @@ export default function UserPage() {
               <UserTableHead
                 order={order}
                 orderBy={orderBy}
-                rowCount={users.length}
+                rowCount={students.length}
                 numSelected={selected.length}
                 onRequestSort={handleSort}
                 onSelectAllClick={handleSelectAllClick}
                 headLabel={[
                   { id: 'name', label: 'Name' },
-                  { id: 'company', label: 'Company' },
-                  { id: 'role', label: 'Role' },
-                  { id: 'isVerified', label: 'Verified', align: 'center' },
-                  { id: 'status', label: 'Status' },
+                  { id: 'belt', label: 'Cinturon' },
+                  // { id: 'role', label: 'Role' },
+                  // { id: 'isVerified', label: 'Verified', align: 'center' },
+                  { id: 'status', label: 'Estado' },
                   { id: '' },
                 ]}
               />
               <TableBody>
                 {dataFiltered
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                  .map((row) => (
+                  .map((row, index) => (
                     <UserTableRow
                       key={row.id}
                       name={row.name}
                       role={row.role}
                       status={row.status}
-                      company={row.company}
-                      avatarUrl={row.avatarUrl}
+                      belt={row.belt}
+                      avatarUrl={row.avatarUrl || `/assets/images/avatars/avatar_${index + 1}.jpg`}
                       isVerified={row.isVerified}
                       selected={selected.indexOf(row.name) !== -1}
                       handleClick={(event) => handleClick(event, row.name)}
@@ -149,7 +177,7 @@ export default function UserPage() {
 
                 <TableEmptyRows
                   height={77}
-                  emptyRows={emptyRows(page, rowsPerPage, users.length)}
+                  emptyRows={emptyRows(page, rowsPerPage, students.length)}
                 />
 
                 {notFound && <TableNoData query={filterName} />}
@@ -161,7 +189,7 @@ export default function UserPage() {
         <TablePagination
           page={page}
           component="div"
-          count={users.length}
+          count={students.length}
           rowsPerPage={rowsPerPage}
           onPageChange={handleChangePage}
           rowsPerPageOptions={[5, 10, 25]}
