@@ -27,6 +27,7 @@ export default function UserTableRow({
   isVerified,
   status,
   handleClick,
+  onNameClick,
 }) {
   const [open, setOpen] = useState(null);
 
@@ -63,7 +64,14 @@ export default function UserTableRow({
         </TableCell>
 
         <TableCell component="th" scope="row" padding="none">
-          <Stack direction="row" alignItems="center" spacing={2}>
+          <Stack 
+            onClick={onNameClick}
+            direction="row" 
+            alignItems="center" 
+            spacing={2}
+            style={{ cursor: 'pointer' }}
+            hover
+           >
             <Avatar alt={name} src={avatarUrl} />
             <Typography variant="subtitle2" noWrap>
               {name}
@@ -76,7 +84,7 @@ export default function UserTableRow({
             style={{ color: `${getBeltsColor(belt)}`, 
               backgroundColor:  `${getBeltsColor(belt)}80`
                }}>
-            {belt}
+            {belt.toLocaleUpperCase()}
           </Label>
         </TableCell>
 
@@ -128,4 +136,5 @@ UserTableRow.propTypes = {
   role: PropTypes.any,
   selected: PropTypes.any,
   status: PropTypes.string,
+  onNameClick: PropTypes.func
 };

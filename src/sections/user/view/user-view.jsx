@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 import { gql, useQuery } from '@apollo/client';
+import { useNavigate } from 'react-router-dom';
 
 import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
@@ -24,10 +25,11 @@ import UserTableToolbar from '../user-table-toolbar';
 import { emptyRows, applyFilter, getComparator } from '../utils';
 
 
-
 // ----------------------------------------------------------------------
 
 export default function UserPage() {
+
+const navigate = useNavigate();
 const GET_STUDENTS = gql`
   query {
     getAllStudents {
@@ -114,6 +116,10 @@ console.log({ students })
     setFilterName(event.target.value);
   };
 
+  const handleUserChange = (user) => {
+    navigate(`/user/${user.id}`);
+  }
+
   const dataFiltered = applyFilter({
     inputData: students,
     comparator: getComparator(order, orderBy),
@@ -172,6 +178,7 @@ console.log({ students })
                       isVerified={row.isVerified}
                       selected={selected.indexOf(row.name) !== -1}
                       handleClick={(event) => handleClick(event, row.name)}
+                      onNameClick={() => handleUserChange(row)}
                     />
                   ))}
 
